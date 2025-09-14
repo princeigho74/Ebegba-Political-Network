@@ -3,23 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ebegba Political Network - Registration</title>
+  <title>Ebegba Political Network/Fam! - Registration</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     form { max-width: 400px; margin: auto; }
-    input, button { width: 100%; padding: 10px; margin: 8px 0; }
+    input, select, button { width: 100%; padding: 10px; margin: 8px 0; }
     button { background: green; color: white; border: none; cursor: pointer; }
     button:hover { background: darkgreen; }
     #message { margin-top: 15px; color: blue; font-weight: bold; }
   </style>
 </head>
 <body>
-  <h2>Ebegba Political Network - Meeting Registration</h2>
+  <h2>Ebegba Political Network/Fam!</h2>
   <form id="regForm">
     <input type="text" name="fullname" placeholder="Full Name" required>
     <input type="email" name="email" placeholder="Email" required>
     <input type="tel" name="phone" placeholder="Phone Number" required>
     <input type="text" name="location" placeholder="Location" required>
+    
+    <!-- New field: Area of Interest -->
+    <select name="interest" required>
+      <option value="" disabled selected>Select Area of Interest</option>
+      <option value="Leadership">Leadership</option>
+      <option value="Youth Empowerment">Youth Empowerment</option>
+      <option value="Community Development">Community Development</option>
+      <option value="Education">Education</option>
+      <option value="Political Mobilization">Political Mobilization</option>
+      <option value="Others">Others</option>
+    </select>
+
     <button type="submit">Register</button>
   </form>
   <div id="message"></div>
