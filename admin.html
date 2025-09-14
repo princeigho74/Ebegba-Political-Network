@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ebegba Political Network - Admin Dashboard</title>
+  <title>Ebegba Political Network/Fam! - Admin Dashboard</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -13,7 +13,7 @@
   </style>
 </head>
 <body>
-  <h2>Registered Members - Ebegba Political Network</h2>
+  <h2>Registered Members - Ebegba Political Network/Fam!</h2>
   <table id="membersTable">
     <thead>
       <tr>
@@ -22,6 +22,7 @@
         <th>Email</th>
         <th>Phone</th>
         <th>Location</th>
+        <th>Area of Interest</th>
         <th>Timestamp</th>
       </tr>
     </thead>
@@ -42,6 +43,7 @@
             <td>${member.email}</td>
             <td>${member.phone}</td>
             <td>${member.location}</td>
+            <td>${member.interest}</td>
             <td>${member.timestamp}</td>
           </tr>`;
           tbody.innerHTML += row;
