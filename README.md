@@ -1,47 +1,63 @@
-📋 Ebegba Political Network - Registration System
+📋 Ebegba Political Network – Registration System
 
-This project provides a responsive registration form and a secure admin dashboard for managing members of the Ebegba Political Network.
-Form submissions are saved automatically into a Google Sheet via a Google Apps Script backend.
+This is a responsive web-based registration system for Ebegba Political Network.
+It allows members and intending attendees to register their interest and automatically stores the data in a Google Sheet using Google Apps Script.
+
+An admin dashboard is also included for viewing registered members securely.
 
 🚀 Features
 
-✅ Responsive registration form (index.html)
+Responsive registration form (mobile + desktop friendly).
 
-✅ Fields: Full Name, Email, Phone, Location, Area of Interest
+Collects: Full Name, Email, Phone, Location, Area of Interest.
 
-✅ Data stored in Google Sheets
+Dropdown with multiple Areas of Interest:
 
-✅ Admin dashboard (admin.html) to view all registered members
+Media and Publicity
 
-✅ Password-protected admin access
+Contact and Mobilization
+
+Jobs
+
+Digital Innovation and Technology
+
+Others
+
+Data automatically saved to Google Sheet via Apps Script.
+
+Admin-only page (admin.html) to view registered members.
+
+Interactive and modern styling with hover effects and transitions.
 
 📂 Project Structure
-.
-├── index.html    # Public registration form
-├── admin.html    # Admin dashboard (password protected)
-├── README.md     # Project documentation
+/project-root
+│── index.html   # Public registration form
+│── admin.html   # Admin dashboard (view registrations)
+│── README.md    # Documentation
 
-🛠️ Setup Instructions
-1. Create a Google Sheet
+⚙️ Setup Instructions
+1. Create Google Sheet
 
-Open Google Sheets
+Open Google Drive → Create a new Google Sheet.
 
-Add headers in row 1:
+Rename it: Ebegba Political Network Members.
+
+Add the following headers in row 1:
 
 Full Name | Email | Phone | Location | Area of Interest | Timestamp
 
-2. Add Google Apps Script
+2. Google Apps Script
 
-In Google Sheets → Extensions → Apps Script
+In the sheet → Extensions > Apps Script.
 
-Delete default code and paste:
+Paste this code:
 
 function doPost(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   var data = JSON.parse(e.postData.contents);
 
   sheet.appendRow([
-    data.fullname,
+    data.name,
     data.email,
     data.phone,
     data.location,
@@ -49,96 +65,75 @@ function doPost(e) {
     new Date()
   ]);
 
-  return ContentService
-    .createTextOutput(JSON.stringify({status:"success", message:"Registered!"}))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(
+    JSON.stringify({ result: "success" })
+  ).setMimeType(ContentService.MimeType.JSON);
 }
 
-function doGet(e) {
+function doGet() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var rows = sheet.getDataRange().getValues();
-  var data = [];
+  var data = sheet.getDataRange().getValues();
+  var result = [];
 
-  for (var i = 1; i < rows.length; i++) {
-    data.push({
-      fullname: rows[i][0],
-      email: rows[i][1],
-      phone: rows[i][2],
-      location: rows[i][3],
-      interest: rows[i][4],
-      timestamp: rows[i][5]
+  for (var i = 1; i < data.length; i++) {
+    result.push({
+      name: data[i][0],
+      email: data[i][1],
+      phone: data[i][2],
+      location: data[i][3],
+      interest: data[i][4],
+      timestamp: data[i][5],
     });
   }
 
-  return ContentService
-    .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(
+    JSON.stringify(result)
+  ).setMimeType(ContentService.MimeType.JSON);
 }
 
-3. Deploy the Web App
 
-Click Deploy → New Deployment → Web App
+Deploy → New Deployment → Web App
 
 Execute as: Me
 
 Who has access: Anyone
 
-Copy the /exec URL (e.g.
-https://script.google.com/macros/s/AKfycb.../exec)
+Copy the Web App URL
 
-4. Connect Frontend
+✅ Your App Link:
 
-In index.html and admin.html, replace the API link with your Web App link:
+https://script.google.com/macros/s/AKfycbz4N6pMgjRQQjmUG3xruQk-CPbKpkLWQcFgW3YcfXLbFq8LWl751SRGAsakZMmzVGTcfg/exec
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxiXzpJKcYUXUGFyxPjAuU5R69HzGA5jny1hn2OuXt4AUgYCbuF_8JXPpnLmAk1jAA2XA/exec";
+3. Update HTML Files
 
-5. Deploy Frontend
+In both index.html and admin.html, update the script section:
 
-Host the files using:
+const scriptURL = "https://script.google.com/macros/s/AKfycbz4N6pMgjRQQjmUG3xruQk-CPbKpkLWQcFgW3YcfXLbFq8LWl751SRGAsakZMmzVGTcfg/exec";
 
-GitHub Pages
+4. Deploy Your Website
 
-Netlify
+You can host on GitHub Pages, Netlify, or Vercel.
 
-Vercel
+Upload both index.html and admin.html.
 
-Share the index.html link with members to register.
+Share index.html link publicly.
 
-Use the admin.html link privately to view registrations.
+Keep admin.html private for organizers only.
 
-🔑 Admin Access
+🔑 Access
 
-admin.html is password protected.
+index.html → Public registration form.
 
-Default password is:
+admin.html → Admin dashboard (organizers only).
 
-Ebegba2025
+📌 Notes
 
+If members report Google App not verified, you (the script owner) can proceed by clicking Advanced > Go to [App Name] (unsafe).
 
-👉 You can change it in admin.html:
+To fully remove the warning, you’d need to publish the app verification with Google Cloud, which is optional.
 
-const ADMIN_PASSWORD = "Ebegba2025";
+✅ With this setup:
 
-✅ Usage Flow
+Members only see the form.
 
-Member opens registration form (index.html) → fills details → data goes into Google Sheet.
-
-Organizer opens admin dashboard (admin.html) → enters password → views all registered members.
-
-📸 Example
-
-Public form (index.html):
-Members see only the registration form.
-
-Admin dashboard (admin.html):
-Organizer sees the full table of registrations after logging in.
-
-⚠️ Notes
-
-The first time you deploy the Google Script, Google may warn “This app isn’t verified”.
-
-Click Advanced → Go to Project (unsafe) → Allow.
-
-This appears only to the developer, not to form users.
-
-Make sure your sheet has enough rows to collect responses.
+Organizers (you) see the full list via admin.html.
