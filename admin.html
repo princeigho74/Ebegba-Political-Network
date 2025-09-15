@@ -3,21 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ebegba Political Network - Admin Dashboard</title>
+  <title>Ebegba Political Network - Admin</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-    th { background-color: #f4f4f4; }
-    tr:hover { background-color: #f9f9f9; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: none;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #4CAF50;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background: #f2f2f2;
+    }
+    .login-box {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    input[type=password], button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
-  <h2>Registered Members - Ebegba Political Network</h2>
+  <div class="login-box" id="loginBox">
+    <h2>Admin Login</h2>
+    <input type="password" id="adminPass" placeholder="Enter Admin Password">
+    <button onclick="checkPassword()">Login</button>
+    <p class="error" id="error"></p>
+  </div>
+
+  <h2 id="membersTitle" style="display:none;">Registered Members - Ebegba Political Network</h2>
   <table id="membersTable">
     <thead>
       <tr>
-        <th>#</th>
         <th>Full Name</th>
         <th>Email</th>
         <th>Phone</th>
@@ -30,27 +93,48 @@
   </table>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFsK80_oD3lxUA9jNX3XM0kouPNFFAXSyHEP8NpaIuUGZzFWdK5oEcj2ofJjCa2c2B/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbxiXzpJKcYUXUGFyxPjAuU5R69HzGA5jny1hn2OuXt4AUgYCbuF_8JXPpnLmAk1jAA2XA/exec";
+    const ADMIN_PASSWORD = "Ebegba2025"; // 🔹 Change this password to whatever you like
 
-    fetch(SCRIPT_URL)
-      .then(res => res.json())
-      .then(data => {
-        let tbody = document.querySelector("#membersTable tbody");
-        data.forEach((member, i) => {
-          let row = `<tr>
-            <td>${i+1}</td>
-            <td>${member.fullname}</td>
-            <td>${member.email}</td>
-            <td>${member.phone}</td>
-            <td>${member.location}</td>
-            <td>${member.interest}</td>
-            <td>${member.timestamp}</td>
-          </tr>`;
-          tbody.innerHTML += row;
+    function checkPassword() {
+      const pass = document.getElementById("adminPass").value;
+      const error = document.getElementById("error");
+
+      if (pass === ADMIN_PASSWORD) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("membersTitle").style.display = "block";
+        document.getElementById("membersTable").style.display = "table";
+        loadMembers();
+      } else {
+        error.textContent = "❌ Incorrect password. Try again.";
+      }
+    }
+
+    function loadMembers() {
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector("#membersTable tbody");
+          tbody.innerHTML = "";
+          data.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${row.fullname}</td>
+              <td>${row.email}</td>
+              <td>${row.phone}</td>
+              <td>${row.location}</td>
+              <td>${row.interest}</td>
+              <td>${row.timestamp}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        })
+        .catch(err => {
+          console.error("Error fetching data:", err);
         });
-      })
-      .catch(err => console.error("Error loading members:", err));
+    }
   </script>
 </body>
 </html>
+
 
