@@ -3,138 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ebegba Political Network - Admin</title>
+  <title>Ebegba Political Network - Admin Dashboard</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 20px;
+      background: #f0f4f8;
     }
     h2 {
       text-align: center;
+      color: #0052a3;
       margin-bottom: 20px;
-      color: #333;
+    }
+    .search-box {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .search-box input {
+      padding: 10px;
+      width: 80%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      background: white;
-      border-radius: 8px;
+      background: #fff;
+      border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      display: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     th, td {
       padding: 12px;
-      border: 1px solid #ddd;
       text-align: left;
     }
     th {
-      background: #4CAF50;
-      color: white;
+      background: #0052a3;
+      color: #fff;
     }
     tr:nth-child(even) {
-      background: #f2f2f2;
+      background: #f9f9f9;
     }
-    .login-box {
-      max-width: 400px;
-      margin: 100px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    tr:hover {
+      background: #eef6ff;
+      transition: 0.2s;
+    }
+    .badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 0.85em;
+      font-weight: bold;
+    }
+    .media { background: #007bff; }
+    .mobilization { background: #28a745; }
+    .jobs { background: #ffc107; color: #000; }
+    .tech { background: #6f42c1; }
+    .others { background: #17a2b8; }
+    #loading {
       text-align: center;
+      font-weight: bold;
+      color: #555;
     }
-    input[type=password], button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    button {
-      background: #4CAF50;
-      color: white;
-      cursor: pointer;
-      border: none;
-    }
-    button:hover {
-      background: #45a049;
-    }
-    .error {
-      color: red;
-      font-size: 14px;
+    #dashboard {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="login-box" id="loginBox">
-    <h2>Admin Login</h2>
-    <input type="password" id="adminPass" placeholder="Enter Admin Password">
+  <h2>📊 Ebegba Political Network - Registered Members</h2>
+
+  <div id="loginBox" style="text-align:center; margin-top:50px;">
+    <p><strong>Enter Admin Password to Continue</strong></p>
+    <input type="password" id="adminPass" placeholder="Enter password">
     <button onclick="checkPassword()">Login</button>
-    <p class="error" id="error"></p>
+    <p id="loginStatus" style="color:red; font-weight:bold;"></p>
   </div>
 
-  <h2 id="membersTitle" style="display:none;">Registered Members - Ebegba Political Network</h2>
-  <table id="membersTable">
-    <thead>
-      <tr>
-        <th>Full Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Location</th>
-        <th>Area of Interest</th>
-        <th>Timestamp</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div id="dashboard">
+    <div class="search-box">
+      <input type="text" id="search" placeholder="🔍 Search members by name, email, or interest...">
+    </div>
+
+    <p id="loading">Loading members...</p>
+
+    <table id="membersTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Location</th>
+          <th>Area of Interest</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody id="membersList"></tbody>
+    </table>
+  </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxiXzpJKcYUXUGFyxPjAuU5R69HzGA5jny1hn2OuXt4AUgYCbuF_8JXPpnLmAk1jAA2XA/exec";
-    const ADMIN_PASSWORD = "Ebegba2025"; // 🔹 Change this password to whatever you like
+    const API_URL = "https://script.google.com/macros/s/AKfycbz4N6pMgjRQQjmUG3xruQk-CPbKpkLWQcFgW3YcfXLbFq8LWl751SRGAsakZMmzVGTcfg/exec";
+    const ADMIN_PASSWORD = "Ebegba2025"; // 🔑 Change this password!
 
     function checkPassword() {
-      const pass = document.getElementById("adminPass").value;
-      const error = document.getElementById("error");
+      const input = document.getElementById("adminPass").value;
+      const status = document.getElementById("loginStatus");
 
-      if (pass === ADMIN_PASSWORD) {
+      if (input === ADMIN_PASSWORD) {
         document.getElementById("loginBox").style.display = "none";
-        document.getElementById("membersTitle").style.display = "block";
-        document.getElementById("membersTable").style.display = "table";
+        document.getElementById("dashboard").style.display = "block";
         loadMembers();
       } else {
-        error.textContent = "❌ Incorrect password. Try again.";
+        status.textContent = "❌ Wrong password!";
       }
     }
 
-    function loadMembers() {
-      fetch(API_URL)
-        .then(res => res.json())
-        .then(data => {
-          const tbody = document.querySelector("#membersTable tbody");
-          tbody.innerHTML = "";
-          data.forEach(row => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td>${row.fullname}</td>
-              <td>${row.email}</td>
-              <td>${row.phone}</td>
-              <td>${row.location}</td>
-              <td>${row.interest}</td>
-              <td>${row.timestamp}</td>
-            `;
-            tbody.appendChild(tr);
-          });
-        })
-        .catch(err => {
-          console.error("Error fetching data:", err);
-        });
+    function getBadge(interest) {
+      switch (interest) {
+        case "Media and Publicity": return `<span class="badge media">${interest}</span>`;
+        case "Contact and Mobilization": return `<span class="badge mobilization">${interest}</span>`;
+        case "Jobs": return `<span class="badge jobs">${interest}</span>`;
+        case "Digital Innovation and Technology": return `<span class="badge tech">${interest}</span>`;
+        default: return `<span class="badge others">${interest}</span>`;
+      }
     }
+
+    async function loadMembers() {
+      try {
+        const res = await fetch(API_URL);
+        const members = await res.json();
+
+        const table = document.getElementById("membersTable");
+        const tbody = document.getElementById("membersList");
+        const loading = document.getElementById("loading");
+
+        loading.style.display = "none";
+        table.style.display = "table";
+
+        tbody.innerHTML = "";
+
+        members.forEach(member => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${member.name}</td>
+            <td>${member.email}</td>
+            <td>${member.phone}</td>
+            <td>${member.location}</td>
+            <td>${getBadge(member.interest)}</td>
+            <td>${member.timestamp}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        console.error(err);
+        document.getElementById("loading").textContent = "⚠️ Failed to load members.";
+      }
+    }
+
+    document.addEventListener("keyup", function (e) {
+      if (e.key === "Enter" && document.getElementById("dashboard").style.display === "none") {
+        checkPassword();
+      }
+    });
+
+    document.getElementById("search").addEventListener("keyup", function () {
+      const filter = this.value.toLowerCase();
+      const rows = document.querySelectorAll("#membersList tr");
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+      });
+    });
   </script>
 </body>
 </html>
-
-
